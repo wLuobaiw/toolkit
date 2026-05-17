@@ -1,0 +1,50 @@
+---
+- name: Install zsh and git
+  package:
+    name:
+      - zsh
+      - git
+    state: present
+
+- name: Download oh-my-zsh install script
+  get_url:
+    url: https://raw.githubusercontent.com/ohmyzsh/ohmyzsh/master/tools/install.sh
+    dest: /tmp/install-oh-my-zsh.sh
+    mode: '0755'
+
+- name: Check if oh-my-zsh is installed
+  stat:
+    path: /root/.oh-my-zsh
+  register: omz_dir
+
+- name: Install oh-my-zsh
+  shell: |
+    RUNZSH=no CHSH=no sh /tmp/install-oh-my-zsh.sh
+  args:
+    executable: /bin/bash
+  when: not omz_dir.stat.exists
+
+- name: Install zsh-autosuggestions plugin
+  git:
+    repo: https://github.com/zsh-users/zsh-autosuggestions
+    dest: /root/.oh-my-zsh/custom/plugins/zsh-autosuggestions
+    depth: 1
+
+- name: Install zsh-syntax-highlighting plugin
+  git:
+    repo: https://github.com/zsh-users/zsh-syntax-highlighting
+    dest: /root/.oh-my-zsh/custom/plugins/zsh-syntax-highlighting
+    depth: 1
+
+- name: Configure .zshrc
+  template:
+    src: zshrc.j2
+    dest: /root/.zshrc
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Set zsh as default shell for root
+  user:
+    name: root
+    shell: /bin/zsh

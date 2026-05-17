@@ -1,0 +1,41 @@
+---
+# —— 功能开关（Web UI 渲染为 checkbox）——
+linux_init_network: true
+linux_init_ssh: true
+linux_init_packages: true
+linux_init_zsh: true
+linux_init_firewall: true
+
+# —— 网络配置 ——
+hostname: "{{ inventory_hostname }}"
+static_ip: ""
+gateway: ""
+dns_servers:
+  - 8.8.8.8
+  - 8.8.4.4
+network_interface: ""
+
+# —— SSH 加固 ——
+ssh_port: 22
+ssh_permit_root_login: "prohibit-password"
+
+# —— Zsh ——
+zsh_theme: "bira"
+zsh_plugins:
+  - git
+  - zsh-autosuggestions
+  - zsh-syntax-highlighting
+
+# —— 常用工具 ——
+base_packages:
+  - tree
+  - vim
+  - curl
+  - wget
+  - git
+  - htop
+  - lsof
+  - rsync
+  - tcpdump
+  - jq
+  - tar

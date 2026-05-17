@@ -1,0 +1,8 @@
+---
+- name: apply netplan
+  command: netplan apply
+
+- name: restart NetworkManager
+  service:
+    name: NetworkManager
+    state: restarted

@@ -1,0 +1,10 @@
+---
+# 在此覆盖 conf.yaml 中的任意变量
+# 变量优先级：extra-vars > inventory > group_vars > play vars_files
+
+# 功能开关
+linux_init_network: true
+linux_init_ssh: true
+linux_init_packages: true
+linux_init_zsh: true
+linux_init_firewall: true
