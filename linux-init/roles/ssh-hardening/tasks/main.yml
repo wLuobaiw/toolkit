@@ -1,0 +1,20 @@
+---
+- name: Check if sshd_config backup exists
+  stat:
+    path: /etc/ssh/sshd_config.bak
+  register: sshd_backup
+
+- name: Backup sshd_config
+  copy:
+    src: /etc/ssh/sshd_config
+    dest: /etc/ssh/sshd_config.bak
+    mode: '0644'
+  when: not sshd_backup.stat.exists
+
+- name: Harden PermitRootLogin
+  lineinfile:
+    path: /etc/ssh/sshd_config
+    regexp: '^#?PermitRootLogin\s+.*'
+    line: "PermitRootLogin {{ ssh_permit_root_login }}"
+    validate: sshd -t -f %s
+  notify: restart sshd

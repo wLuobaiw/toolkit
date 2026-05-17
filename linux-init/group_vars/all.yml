@@ -1,0 +1,36 @@
+---
+# Network
+hostname: "{{ inventory_hostname }}"
+static_ip: ""
+gateway: ""
+dns_servers:
+  - 8.8.8.8
+  - 8.8.4.4
+network_interface: ""
+
+# SSH
+ssh_port: 22
+ssh_permit_root_login: "prohibit-password"
+
+# Zsh
+zsh_users:
+  - root
+zsh_theme: "bira"
+zsh_plugins:
+  - git
+  - zsh-autosuggestions
+  - zsh-syntax-highlighting
+
+# Base packages
+base_packages:
+  - tree
+  - vim
+  - curl
+  - wget
+  - git
+  - htop
+  - lsof
+  - rsync
+  - tcpdump
+  - jq
+  - tar

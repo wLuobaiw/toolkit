@@ -1,0 +1,9 @@
+---
+- name: Configure static IP via nmcli
+  shell: |
+    nmcli con mod "{{ network_interface }}" ipv4.addresses "{{ static_ip }}" 2>/dev/null || nmcli con add type ethernet ifname "{{ network_interface }}" con-name "{{ network_interface }}" ipv4.addresses "{{ static_ip }}"
+    nmcli con mod "{{ network_interface }}" ipv4.gateway "{{ gateway }}"
+    nmcli con mod "{{ network_interface }}" ipv4.dns "{{ dns_servers | join(',') }}"
+    nmcli con mod "{{ network_interface }}" ipv4.method manual
+    nmcli con mod "{{ network_interface }}" autoconnect yes
+  notify: restart NetworkManager
