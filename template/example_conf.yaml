@@ -1,0 +1,81 @@
+# ============================================================
+# conf.yaml 配置说明
+# 路径：ansible/roles/<分类>/<组件>/<版本>/conf.yaml
+# 用途：定义前端步骤 3 的配置表单
+# ============================================================
+
+fields:
+
+  # ── 文本输入 ──────────────────────────────────────────────
+  - name: port                    # 字段标识（必填，提交时的 key）
+    label: 服务端口               # 表单标签
+    type: number                  # number | text | password | select | bool
+    required: true                # 是否必填
+    default: 3306                 # 默认值
+    placeholder: "1024-65535"     # 输入提示（可选）
+    size: 6                       # 栅格宽度：12=全行 6=半行 4=三列（可选，默认12）
+
+  - name: password
+    label: 密码
+    type: password
+    required: true
+    size: 6
+
+  # ── 下拉选择（单选）───────────────────────────────────────
+  - name: deploy_mode
+    label: 部署模式
+    type: select
+    required: true
+    default: "single"
+    size: 6
+    options:                      # 选项列表
+      - single
+      - cluster
+
+  # ── 下拉选择（多选，滚动列表框）───────────────────────────
+  - name: zsh_plugins
+    label: Zsh 插件
+    type: select
+    multiple: true                # 多选，渲染为滚动复选框列表
+    size: 4                       # 可见行数（超出滚动），非多选时控制栅格宽度
+    default:
+      - git
+    options:
+      - git
+      - zsh-autosuggestions
+      - zsh-syntax-highlighting
+      - docker
+      - docker-compose
+
+  # ── 布尔开关 ──────────────────────────────────────────────
+  - name: install_zsh
+    label: 安装 oh-my-zsh
+    type: bool
+    required: false
+    default: true
+    placeholder: "安装 zsh"
+    size: 6
+
+  # ── 目标主机选择 ──────────────────────────────────────────
+  - name: target_hosts
+    label: 目标主机
+    type: target_hosts
+    default: "all"                # "all" = 全部主机（不展示选择框）
+    size: 12                      # 非 "all" 时渲染主机单选列表
+
+  # ── 条件显示（依赖 bool 勾选）────────────────────────────
+  - name: zsh_theme
+    label: Zsh 主题
+    type: text
+    required: true
+    default: "bira"
+    size: 6
+    depends_on: install_zsh        # 仅当 install_zsh 勾选时显示
+
+  - name: vip
+    label: VIP 地址
+    type: text
+    required: false
+    placeholder: "10.0.0.100"
+    size: 6
+    show_if: install_zsh          # 和 depends_on 等价
