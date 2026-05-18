@@ -13,13 +13,13 @@ fields:
     required: true                # 是否必填
     default: 3306                 # 默认值
     placeholder: "1024-65535"     # 输入提示（可选）
-    size: 6                       # 栅格宽度：12=全行 6=半行 4=三列（可选，默认12）
+    col: 6                       # 栅格宽度：12=全行 6=半行 4=三列（可选，默认12）
 
   - name: password
     label: 密码
     type: password
     required: true
-    size: 6
+    col: 6
 
   # ── 下拉选择（单选）───────────────────────────────────────
   - name: deploy_mode
@@ -27,17 +27,16 @@ fields:
     type: select
     required: true
     default: "single"
-    size: 6
+    col: 6
     options:                      # 选项列表
       - single
       - cluster
 
-  # ── 下拉选择（多选，滚动列表框）───────────────────────────
+  # ── 下拉选择（多选，滚动列表框，固定三行高度）─────────────
   - name: zsh_plugins
     label: Zsh 插件
     type: select
-    multiple: true                # 多选，渲染为滚动复选框列表
-    size: 4                       # 可见行数（超出滚动），非多选时控制栅格宽度
+    multiple: true                # 竖向复选框列表，超出三行可滚动
     default:
       - git
     options:
@@ -54,14 +53,14 @@ fields:
     required: false
     default: true
     placeholder: "安装 zsh"
-    size: 6
+    col: 6
 
   # ── 目标主机选择 ──────────────────────────────────────────
   - name: target_hosts
     label: 目标主机
     type: target_hosts
     default: "all"                # "all" = 全部主机（不展示选择框）
-    size: 12                      # 非 "all" 时渲染主机单选列表
+    col: 12                      # 非 "all" 时渲染主机单选列表
 
   # ── 条件显示（依赖 bool 勾选）────────────────────────────
   - name: zsh_theme
@@ -69,7 +68,7 @@ fields:
     type: text
     required: true
     default: "bira"
-    size: 6
+    col: 6
     depends_on: install_zsh        # 仅当 install_zsh 勾选时显示
 
   - name: vip
@@ -77,5 +76,5 @@ fields:
     type: text
     required: false
     placeholder: "10.0.0.100"
-    size: 6
+    col: 6
     show_if: install_zsh          # 和 depends_on 等价
