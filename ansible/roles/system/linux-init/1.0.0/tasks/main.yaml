@@ -1,0 +1,16 @@
+---
+- name: 配置网络
+  include_tasks: network.yaml
+
+- name: SSH 加固
+  include_tasks: ssh-hardening.yaml
+
+- name: 安装常用工具
+  include_tasks: base-packages.yaml
+
+- name: 安装 oh-my-zsh
+  include_tasks: oh-my-zsh.yaml
+  when: linux_init_zsh | default('no') == 'yes'
+
+- name: 配置防火墙
+  include_tasks: firewall.yaml

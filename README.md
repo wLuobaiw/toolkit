@@ -9,9 +9,10 @@
 按 `组件名/版本号/` 组织，一个 Git 仓库承载所有版本：
 
 ```
-ansible/roles/<组件>/<版本>/
-├── tasks/main.yml          # 部署任务（playbook 主体）
-├── templates/*.j2          # Jinja2 配置模板（用户前端填参 → 渲染 → 部署）
+ansible/roles/<分类>/<组件>/<版本>/
+├── conf.yaml                 # 组件配置定义（表单字段定义）
+├── tasks/main.yaml           # 部署任务（playbook 主体）
+├── templates/*.j2            # Jinja2 配置模板（用户前端填参 → 渲染 → 部署）
 ├── defaults/main.yml       # 默认变量（双重用途：Ansible 默认值 + 前端表单字段定义）
 └── files/                  # 静态文件（Dockerfile、证书等）
 ```
@@ -33,20 +34,20 @@ conf/nginx/
 └── vhost.conf.j2           # 虚拟主机配置模板
 ```
 
-### linux-init/ — Linux 服务器初始化
+### ansible/roles/system/linux-init/ — Linux 服务器初始化
 
-全新 Linux 服务器的一键初始化 playbook：
+位于 `ansible/roles/system/linux-init/1.0.0/`，按 `分类/组件/版本` 组织。使用扁平 task 文件结构（非子 role）：
 
 | 文件 | 说明 |
 |------|------|
-| `init.yml` | 主 playbook，编排 5 个 role |
-| `inventory.example` | 主机清单示例 |
-| `group_vars/all.yml` | 全局可配置变量 |
-| `roles/network/` | 设置主机名、静态 IP、DNS |
-| `roles/ssh-hardening/` | SSH 加固（禁止密码登录） |
-| `roles/base-packages/` | 安装 tree/vim/curl/htop 等常用工具 |
-| `roles/oh-my-zsh/` | 安装 zsh + oh-my-zsh + 插件 |
-| `roles/firewall/` | 配置防火墙（ufw/firewalld） |
+| `conf.yaml` | 配置表单定义（checkbox + 下拉框 + 文本输入） |
+| `defaults/main.yaml` | 所有变量默认值 |
+| `tasks/main.yaml` | 任务入口，除 oh-my-zsh 外全部必装 |
+| `tasks/network.yaml` | 设置主机名、静态 IP、DNS |
+| `tasks/ssh-hardening.yaml` | SSH 加固（禁止密码登录） |
+| `tasks/base-packages.yaml` | 安装 tree/vim/curl/htop 等常用工具 |
+| `tasks/oh-my-zsh.yaml` | 安装 zsh + oh-my-zsh + 插件（可选） |
+| `tasks/firewall.yaml` | 配置防火墙（ufw/firewalld） |
 
 支持 Debian/Ubuntu 和 CentOS/RHEL/Rocky。
 
@@ -58,6 +59,6 @@ conf/nginx/
 
 ## 前端配置表单的生成逻辑
 
-1. 读取组件 `defaults/main.yml` 中的变量定义
+1. 读取组件 `conf.yaml` 中的变量定义
 2. 将每个变量渲染为对应类型的表单字段
 3. 用户填入的值在部署时注入 Ansible

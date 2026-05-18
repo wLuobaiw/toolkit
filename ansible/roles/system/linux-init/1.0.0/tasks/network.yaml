@@ -1,0 +1,52 @@
+---
+- name: Set hostname
+  hostname:
+    name: "{{ hostname }}"
+
+- name: Detect default network interface
+  shell: ip route | grep default | awk '{print $5}'
+  register: default_iface
+  changed_when: false
+  when: network_interface | length == 0
+
+- name: Set network_interface fact
+  set_fact:
+    network_interface: "{{ default_iface.stdout }}"
+  when: network_interface | length == 0
+
+- name: Check resolv.conf state
+  stat:
+    path: /etc/resolv.conf
+  register: resolv_conf
+
+- name: Remove resolv.conf symlink
+  file:
+    path: /etc/resolv.conf
+    state: absent
+  when: resolv_conf.stat.islnk is defined and resolv_conf.stat.islnk
+
+- name: Configure DNS
+  template:
+    src: resolv.conf.j2
+    dest: /etc/resolv.conf
+    mode: '0644'
+
+# —— Debian / Ubuntu：netplan ——
+- name: Write netplan configuration
+  template:
+    src: netplan.yaml.j2
+    dest: /etc/netplan/01-netcfg.yaml
+    mode: '0644'
+  notify: apply netplan
+  when: ansible_os_family == 'Debian'
+
+# —— RHEL / Rocky / Alma：nmcli ——
+- name: Configure static IP via nmcli
+  shell: |
+    nmcli con mod "{{ network_interface }}" ipv4.addresses "{{ static_ip }}" 2>/dev/null || nmcli con add type ethernet ifname "{{ network_interface }}" con-name "{{ network_interface }}" ipv4.addresses "{{ static_ip }}"
+    nmcli con mod "{{ network_interface }}" ipv4.gateway "{{ gateway }}"
+    nmcli con mod "{{ network_interface }}" ipv4.dns "{{ dns_servers | join(',') }}"
+    nmcli con mod "{{ network_interface }}" ipv4.method manual
+    nmcli con mod "{{ network_interface }}" autoconnect yes
+  notify: restart NetworkManager
+  when: ansible_os_family == 'RedHat'

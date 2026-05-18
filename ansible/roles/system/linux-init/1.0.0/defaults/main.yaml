@@ -1,5 +1,5 @@
 ---
-# Network
+# 网络配置
 hostname: "{{ inventory_hostname }}"
 static_ip: ""
 gateway: ""
@@ -8,20 +8,18 @@ dns_servers:
   - 8.8.4.4
 network_interface: ""
 
-# SSH
+# SSH 加固
 ssh_port: 22
 ssh_permit_root_login: "prohibit-password"
 
-# Zsh
-zsh_users:
-  - root
+# Zsh（仅在 linux_init_zsh == 'yes' 时生效）
 zsh_theme: "bira"
 zsh_plugins:
   - git
   - zsh-autosuggestions
   - zsh-syntax-highlighting
 
-# Base packages
+# 常用工具
 base_packages:
   - tree
   - vim

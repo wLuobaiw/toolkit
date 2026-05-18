@@ -1,3 +1,0 @@
----
-- name: Include OS-specific firewall tasks
-  include_tasks: "{{ ansible_os_family | lower }}.yml"

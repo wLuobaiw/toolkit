@@ -1,3 +1,0 @@
----
-# Handlers reserved for future use.
-# ufw and firewalld Ansible modules apply changes immediately.

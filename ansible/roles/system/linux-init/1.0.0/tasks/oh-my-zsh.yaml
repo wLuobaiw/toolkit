@@ -43,6 +43,8 @@
     owner: root
     group: root
     mode: '0644'
+  vars:
+    zsh_plugins: "{{ zsh_plugins.split() if zsh_plugins is string else zsh_plugins }}"
 
 - name: Set zsh as default shell for root
   user:

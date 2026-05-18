@@ -1,0 +1,43 @@
+---
+# —— Debian / Ubuntu：ufw ——
+- name: Install ufw
+  apt:
+    name: ufw
+    state: present
+  when: ansible_os_family == 'Debian'
+
+- name: Allow SSH through ufw
+  ufw:
+    rule: allow
+    port: "{{ ssh_port }}"
+    proto: tcp
+  when: ansible_os_family == 'Debian'
+
+- name: Enable ufw with default deny incoming
+  ufw:
+    state: enabled
+    default: deny
+    direction: incoming
+  when: ansible_os_family == 'Debian'
+
+# —— RHEL / Rocky / Alma：firewalld ——
+- name: Install firewalld
+  package:
+    name: firewalld
+    state: present
+  when: ansible_os_family == 'RedHat'
+
+- name: Ensure firewalld is running and enabled
+  service:
+    name: firewalld
+    state: started
+    enabled: yes
+  when: ansible_os_family == 'RedHat'
+
+- name: Allow SSH through firewalld
+  firewalld:
+    service: ssh
+    permanent: yes
+    state: enabled
+    immediate: yes
+  when: ansible_os_family == 'RedHat'

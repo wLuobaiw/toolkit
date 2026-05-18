@@ -1,6 +1,0 @@
----
-zsh_theme: "bira"
-zsh_plugins:
-  - git
-  - zsh-autosuggestions
-  - zsh-syntax-highlighting
